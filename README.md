@@ -1,632 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
-    <title>【mo+】Project Gantt Chart</title>
-    <style>
-        :root {
-            --bg-body: #f8f9fa;
-            --bg-card: #ffffff;
-            --text-main: #2b3a67;
-            --text-light: #6c757d;
-            --border-color: #e9ecef;
-            --radius-lg: 12px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopee x OMM 專案週報｜One-Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── 底層：霧藍系的米白當背景 ── */
+  --bg:#F2F2ED;          /* 米白（整體底） */
+  --card:#FFFFFF;        /* 純白卡片 */
+  --line:#E4E4DC;        /* 米白加深（線條/邊框） */
 
-        body {
-            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
-            background: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 30px;
-        }
+  /* ── 文字 ── */
+  --ink:#464B71;         /* 霧藍（內文） */
+  --title:#601D49;       /* 深紫莓（大標題） */
 
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            background: var(--bg-card);
-            padding: 20px 30px;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        }
+  /* ── 主深色：霧藍系 ── */
+  --navy:#464B71;        /* 霧藍（圓圈/旗標/深塊） */
+  --blue:#118AB2;        /* 湖水藍（次主色/數據） */
+  --lite:#24B1B1;        /* 薄荷綠（淺色塊/膠囊） */
+  --sage:#24B1B1;        /* 薄荷綠 */
 
-        .header-title h1 { margin: 0; color: var(--text-main); font-size: 28px; font-weight: 800; }
-        .header-title p { margin: 5px 0 0; color: var(--text-light); font-size: 14px; }
+  /* ── 強調：莓紫系 ── */
+  --orange:#BD5579;      /* 莓果玫瑰（風險/強調/今日線） */
+  --rose:#BD5579;        /* 莓果玫瑰 */
+  --tan:#EA9D9D;         /* 玫瑰粉（次強調） */
 
-        .controls { display: flex; gap: 10px; }
-        button {
-            padding: 8px 16px; border: none; border-radius: 20px; cursor: pointer;
-            font-weight: 600; font-size: 13px; transition: 0.2s;
-        }
-        .btn-primary { background: var(--text-main); color: white; }
-        .btn-primary:hover { background: #1a2540; }
-        .btn-outline { background: white; border: 1px solid var(--text-main); color: var(--text-main); }
-        .btn-outline:hover { background: #f8f9fa; }
-        .btn-danger { background: #ff4757; color: white; }
-        .btn-success { background: #2ed573; color: white; }
-        .btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 12px; margin-left: 5px;}
+  /* ── 淺色點綴：兩系混合 ── */
+  --beige:#FFEBB8;       /* 奶油黃（邊框淺塊/提示底） */
+  --cream:#FFEBB8;       /* 奶油黃 */
+}
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:'Noto Sans TC','Poppins',sans-serif; padding-bottom:70px;}
+  h1,h2,h3,.num{font-family:'Poppins','Noto Sans TC',sans-serif;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
 
-        /* Gantt Chart Container */
-        .gantt-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
+  /* ===== Hero ===== */
+  .hero{padding:64px 20px 30px; text-align:center;}
+  .hero h1{color:var(--title); font-size:38px; font-weight:800; letter-spacing:.5px;}
+  .hero p{margin-top:10px; font-size:17px; color:#6b5d50;}
+  .meta{margin-top:26px; display:flex; flex-wrap:wrap; gap:14px; justify-content:center;}
+  .pill{padding:10px 26px; border-radius:999px; font-weight:700; font-size:15px; color:#fff; box-shadow:0 4px 10px rgba(60,40,30,.12);}
+  .pill.navy{background:var(--navy);}
+  .pill.blue{background:var(--blue);}
+  .pill.orange{background:var(--rose);}
+  .pill.lite{background:var(--lite); color:var(--navy);}
 
-        .gantt-grid {
-            display: grid;
-            grid-template-columns: 250px repeat(30, 100px); 
-            background: white;
-            gap: 0; 
-            min-width: max-content;
-        }
+  section{margin-top:70px;}
+  .s-head{text-align:center; margin-bottom:40px;}
+  .s-head h2{color:var(--title); font-size:30px; font-weight:800;}
+  .s-head span{display:block; margin-top:8px; color:#7a6e64; font-size:15px;}
 
-        .cell {
-            background: white;
-            padding: 6px 10px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #f0f0f0;
-            border-right: 1px solid #f0f0f0;
-            box-sizing: border-box;
-            height: 50px;
-        }
+  /* ===== ① Dashboard ===== */
+  .tiles{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
+  .tile{background:var(--card); border-radius:14px; padding:26px 20px; text-align:center;
+        box-shadow:0 12px 24px rgba(60,40,30,.08); border-top:6px solid var(--c,var(--navy));}
+  .tile .big{font-size:34px; font-weight:800; color:var(--c,var(--navy)); font-family:'Poppins';}
+  .tile .lb{margin-top:8px; font-weight:700; color:#3a2f28;}
+  .tile .sb{margin-top:4px; font-size:13px; color:#7a6e64;}
 
-        .cell.header { 
-            font-weight: 700; color: var(--text-main); justify-content: center; 
-            background: #f8f9fa; font-size: 12px; height: 50px;
-            position: sticky; top: 0; z-index: 5;
-        }
-        .cell.header.task-header { 
-            justify-content: flex-start; padding-left: 20px; font-size: 16px;
-            position: sticky; left: 0; z-index: 25; background: #f8f9fa; 
-            border-right: 2px solid var(--border-color);
-        }
+  /* ===== ② Summary ===== */
+  .sum-card{background:var(--card); border-radius:16px; padding:34px 40px; line-height:1.9; font-size:16.5px;
+            box-shadow:0 12px 26px rgba(60,40,30,.09); border-left:10px solid var(--rose);}
+  .sum-card b{color:var(--navy);}
 
-        .cell.group-row {
-            grid-column: 1 / 2;
-            background: #f8f9fa;
-            font-weight: 700;
-            color: #425cc8;
-            font-size: 16px;
-            padding: 6px 20px;
-            position: sticky; left: 0; z-index: 15; 
-            border-right: 2px solid var(--border-color);
-        }
-        .cell.group-row-filler {
-            grid-column: 2 / -1;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-        }
+  /* ===== ③ Timeline ===== */
+  .tl-grid{display:grid; grid-template-columns:1fr 1fr; gap:36px 70px;}
+  .tl-item{--c:var(--navy); display:grid; grid-template-columns:92px 46px 1fr; align-items:center;}
+  .tl-num{width:88px; height:88px; border-radius:50%; background:var(--c); color:#fff;
+          display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800;}
+  .tl-item.dk .tl-num{color:var(--navy);}
+  .tl-mid{display:flex; justify-content:center; align-self:stretch; padding:6px 0;}
+  .tl-mid i{width:14px; border-radius:8px; background:var(--c); opacity:.95;}
+  .tl-card{position:relative; background:var(--card); border-radius:14px; padding:22px 26px;
+           box-shadow:0 12px 22px rgba(60,40,30,.09);}
+  .tl-card::before{content:""; position:absolute; left:-32px; top:50%; width:32px; height:2px; background:#cdbfa9;}
+  .tl-card::after{content:""; position:absolute; left:-11px; top:calc(50% - 6px); width:11px; height:11px; border-radius:50%; background:var(--c);}
+  .tl-card h3{font-size:17px; font-weight:800; color:#2d3a4a; margin-bottom:8px;}
+  .tl-card p{font-size:14px; line-height:1.75; color:#6b5d50;}
 
-        .cell.task-name {
-            font-weight: 500;
-            position: sticky; left: 0; z-index: 20;
-            background: white;
-            border-right: 2px solid var(--border-color);
-            padding-left: 20px;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .cell.task-name:hover { background: #f8f9fa; }
-        .task-name-text { font-size: 13px; margin-bottom: 2px;}
-        .dep-tag {
-            font-size: 10px; color: #868e96; background: #e9ecef;
-            padding: 2px 6px; border-radius: 8px; display: inline-block;
-        }
-        .dep-tag.warning { color: #d63384; background: #fcc2d7; }
+  /* ===== ④ Table ===== */
+  table.cmp{width:100%; border-collapse:collapse; background:var(--card); box-shadow:0 12px 26px rgba(60,40,30,.09);}
+  .cmp th,.cmp td{border:1px solid var(--line); padding:16px 14px; text-align:center; font-size:14.5px;}
+  .cmp td:first-child{font-weight:800; color:#2d3a4a; width:150px;}
+  .banner{clip-path:polygon(0 0,100% 0,100% 76%,50% 100%,0 76%); padding:24px 8px 34px; font-weight:800; font-size:16px; color:#fff;}
+  .b-navy{background:var(--navy);}
+  .b-blue{background:var(--blue);}
+  .b-lite{background:var(--lite); color:var(--navy);}
+  .b-orange{background:var(--rose);}
+  .b-beige{background:var(--tan); color:var(--navy);}
+  .st{padding:4px 16px; border-radius:999px; font-weight:700; font-size:13px;}
+  .st.g{background:#dcebd9; color:#4a6b4a;}
+  .st.y{background:#fbe4d8; color:#9a5a3a;}
+  .pbtn{display:inline-block; padding:10px 26px; border-radius:999px; font-weight:800; font-size:14px; color:#fff;}
+  .pbtn.navy{background:var(--navy);}
+  .pbtn.blue{background:var(--blue);}
+  .pbtn.lite{background:var(--lite); color:var(--navy);}
+  .pbtn.orange{background:var(--rose);}
 
-        .cell.timeline-area {
-            grid-column: 2 / -1;
-            position: relative;
-            padding: 0 0 0 10px; /* 新增左側 padding 創造間距 */
-            height: 50px;
-            background: white;
-            border-right: none;
-            box-sizing: border-box;
-        }
-        
-        /* The Bar - 高度 16px，垂直居中 (50-16)/2 = 17px */
-        .bar {
-            position: absolute;
-            top: 17px; 
-            height: 16px; 
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.1s;
-            z-index: 10;
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 0 8px;
-        }
-        .bar:hover { transform: scaleY(1.2); z-index: 20; filter: brightness(1.1); }
-        
-        /* Milestone - 垂直居中調整 */
-        .milestone {
-            position: absolute;
-            top: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            cursor: pointer;
-            z-index: 10;
-        }
-        .milestone-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #333;
-            white-space: nowrap;
-            order: -1;
-        }
-        .milestone-shape {
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            flex-shrink: 0;
-            transition: transform 0.1s;
-        }
-        .milestone:hover .milestone-shape { transform: scale(1.2); }
+  /* ===== ⑤ Risks ===== */
+  .risks{display:grid; grid-template-columns:1fr 1fr; gap:26px;}
+  .risk{background:var(--card); border-radius:14px; padding:26px 30px; border-left:10px solid var(--rose);
+        box-shadow:0 12px 22px rgba(60,40,30,.09); line-height:1.8; font-size:14.5px;}
+  .risk h3{font-size:17px; font-weight:800; color:#2d3a4a; margin-bottom:10px;}
+  .risk b{color:var(--navy);}
+  .risk .ask{background:var(--cream); border-radius:10px; padding:10px 14px; margin-top:8px; color:#8a5a2c;}
 
-        .bg-conflict { border: 2px dashed #ff4757 !important; opacity: 0.8; }
+  /* ===== ⑥ Next ===== */
+  .next{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
+  .n-item{background:var(--card); border-radius:14px; padding:26px 20px; text-align:center; box-shadow:0 12px 22px rgba(60,40,30,.09);}
+  .n-item .num{width:64px; height:64px; margin:0 auto; border-radius:50%; background:var(--c,var(--navy)); color:#fff;
+               display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800;}
+  .n-item.dk .num{color:var(--navy);}
+  .n-item p{margin-top:16px; font-size:14px; line-height:1.7; color:#3a2f28; font-weight:500;}
 
-        /* Modal */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(43, 58, 103, 0.4); z-index: 100;
-            justify-content: center; align-items: center; backdrop-filter: blur(2px);
-        }
-        .modal-overlay.active { display: flex; }
-        .modal {
-            background: white; padding: 25px; border-radius: 16px; width: 500px; max-width: 90%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;
-        }
-        .modal h3 { margin-top: 0; color: var(--text-main); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;}
-        
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-light); margin-bottom: 5px; }
-        .form-control {
-            width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px;
-            font-family: inherit; font-size: 13px; box-sizing: border-box;
-        }
-        .form-row { display: flex; gap: 10px; }
-        .form-row .form-group { flex: 1; }
-        
-        .checkbox-group { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-        
-        .week-details-box {
-            background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 10px;
-            max-height: 150px; overflow-y: auto; font-size: 12px;
-        }
-        .week-detail-item { display: flex; gap: 5px; margin-bottom: 5px; }
-        .week-detail-item input { flex: 1; padding: 4px; border: 1px solid #ddd; border-radius: 4px; }
+  /* ===== ⑦ Gantt ===== */
+  .gantt{background:var(--card); border-radius:16px; padding:28px 30px; box-shadow:0 12px 26px rgba(60,40,30,.09);}
+  .g-toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:6px;}
+  .g-title{font-weight:800; font-size:19px; color:var(--navy); margin-right:auto;}
+  .g-btn{padding:7px 16px; border-radius:8px; background:var(--cream); border:1px solid var(--line); font-size:13px; font-weight:700; color:#3a2f28;}
+  .g-sub{color:#7a6e64; font-size:13px; margin-bottom:18px;}
+  .g-wrap{position:relative; overflow-x:auto;}
+  .g-head,.g-row{display:grid; grid-template-columns:230px repeat(7,1fr); align-items:center; min-width:920px;}
+  .g-head .wk{text-align:center; font-weight:700; color:#7a6e64; font-size:12.5px; padding:8px 0; border-left:1px solid var(--line);}
+  .g-head .wk small{display:block; font-weight:500; color:#a59680;}
+  .g-head .wk.now{color:var(--rose); font-weight:800;}
+  .g-row{border-top:1px solid var(--line); min-height:44px;}
+  .g-row .tname{font-size:13px; font-weight:600; color:#3a2f28; padding:6px 12px 6px 4px; line-height:1.5;}
+  .g-row .tname small{color:#a59680; font-weight:500;}
+  .g-row.grp{background:var(--cream);}
+  .g-row.grp .tname{font-weight:800; color:var(--navy); font-size:13.5px;}
+  .bar{height:18px; border-radius:9px; background:var(--c); position:relative; margin:0 5px;}
+  .bar span{position:absolute; right:8px; top:50%; transform:translateY(-50%); color:#fff; font-size:10px; font-weight:700;}
+  .mile{width:15px; height:15px; border-radius:3px; background:var(--c); margin:0 auto; box-shadow:0 0 0 3px rgba(45,58,74,.08);}
+  .today{position:absolute; top:40px; bottom:8px; left:calc(230px + (100% - 230px) * 4 / 7); border-left:2px dashed var(--rose); z-index:2; pointer-events:none;}
+  .today b{position:absolute; top:-30px; left:-38px; color:var(--rose); font-size:11px; white-space:nowrap;}
+  .g-legend{display:flex; flex-wrap:wrap; gap:18px; margin-top:16px; font-size:12.5px; color:#7a6e64; align-items:center;}
+  .lg{display:inline-flex; align-items:center; gap:6px;}
+  .lg i{width:22px; height:10px; border-radius:5px; display:inline-block;}
+  .lg .sq{width:11px; height:11px; border-radius:3px;}
 
-        .modal-footer { display: flex; justify-content: space-between; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;}
-    </style>
+  footer{margin-top:80px; text-align:center; color:#a59680; font-size:13px;}
+  @media(max-width:900px){ .tiles,.next{grid-template-columns:1fr 1fr;} .tl-grid,.risks{grid-template-columns:1fr;} }
+</style>
 </head>
 <body>
 
-    <div class="header-section">
-        <div class="header-title">
-            <h1>【mo+】Project Gantt Chart</h1>
-            <p>Tasks, dependencies, and milestones.</p>
-        </div>
-        <div class="controls">
-            <button class="btn-outline" id="addGroupBtn" onclick="addGroup()">+ New Group</button>
-            <button class="btn-primary" id="addTaskBtn" onclick="openModal()">+ New Task</button>
-            <button class="btn-outline" id="viewToggleBtn" onclick="toggleViewMode()">👁️ View</button>
-            <button class="btn-success" id="saveBtn" onclick="saveData(true)">💾 Save</button>
-        </div>
+<header class="hero">
+  <h1>Shopee x OMM 平台訂單整合專案</h1>
+  <p>PM 每週一頁式進度報告｜2026-08-25（W35）</p>
+  <div class="meta">
+    <span class="pill navy">PM：＿＿＿</span>
+    <span class="pill orange">整體狀態：🟡 黃燈（風險可控）</span>
+    <span class="pill blue">UAT 執行率 85%</span>
+    <span class="pill lite">Go-Live：2026-09-15</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ① Dashboard -->
+  <section>
+    <div class="s-head"><h2>① 專案總覽儀表板</h2><span>Project Dashboard — 一秒掌握健康度</span></div>
+    <div class="tiles">
+      <div class="tile" style="--c:var(--rose)"><div class="big">🟡</div><div class="lb">整體狀態</div><div class="sb">帳務風險收斂中，不影響上線日</div></div>
+      <div class="tile" style="--c:var(--navy)"><div class="big">85%</div><div class="lb">UAT 執行率</div><div class="sb">34 / 39 情境已執行</div></div>
+      <div class="tile" style="--c:var(--blue)"><div class="big">87%</div><div class="lb">情境 Pass 率</div><div class="sb">High Bug 3 → 0</div></div>
+      <div class="tile" style="--c:var(--lite)"><div class="big">9/15</div><div class="lb">預定 Go-Live</div><div class="sb">9/11 Go/No-Go 會議</div></div>
     </div>
+  </section>
 
-    <div class="gantt-card">
-        <div class="gantt-grid" id="ganttGrid"></div>
+  <!-- ② Summary -->
+  <section>
+    <div class="s-head"><h2>② 執行摘要</h2><span>Executive Summary — 結論先行</span></div>
+    <div class="sum-card">
+      本週完成 <b>5 種店碼（950〜953、966）正向出貨</b>與<b>逆向退貨（RVS）核心流程</b>驗證，正向主流程與取消／Quota 路由已 100% Pass。
+      目前主要風險為 <b>Retek 退貨帳務未帶入賣場優惠券折扣（Finance check Fail）</b>與 <b>RTW 狀態回傳延遲</b>，
+      已開立 Jira 緊急單並與 OSB／WINS 排定聯合排查，預計下週三前收斂，<b>不影響 9/15 上線時程</b>。
     </div>
+  </section>
 
-    <!-- Edit Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <h3 id="modalTitle">Edit Task</h3>
-            
-            <div class="form-group">
-                <label>Task Name</label>
-                <input type="text" id="taskName" class="form-control" placeholder="e.g. Local Kick-off">
-            </div>
+  <!-- ③ Achievements -->
+  <section>
+    <div class="s-head"><h2>③ 本週關鍵成果</h2><span>Key Achievements — 六項里程碑</span></div>
+    <div class="tl-grid">
+      <div class="tl-item" style="--c:var(--navy)"><div class="tl-num">01</div><div class="tl-mid"><i></i></div>
+        <div class="tl-card"><h3>正向流程（HF）Sign-off</h3><p>五條路線之 Quota 路由與 IST 帳務（927/949→95x）驗證 100% Pass。</p></div></div>
+      <div class="tl-item" style="--c:var(--rose)"><div class="tl-num">04</div><div class="tl-mid"><i></i></div>
+        <div class="tl-card"><h3>爭議件流程對齊</h3><p>RVS-6 部分退爭議：依 Receive qty 產生 webmt／Return tlog 邏輯與 OSB、WINS 確認一致。</p></div></div>
+      <div class="tl-item" style="--c:var(--blue)"><div class="tl-num">02</div><div class="tl-mid"><i></i></div>
+        <div class="tl-card"><h3>退貨流程（RVS）驗證完成</h3><p>WINS 948 退貨倉庫存不同步 Retek 之議題已解決，virtual code 946 邏輯確認正確。</p></div></div>
+      <div class="tl-item" style="--c:var(--tan)"><div class="tl-num dk">05</div><div class="tl-mid"><i></i></div>
+        <div class="tl-card"><h3>Bug 收斂</h3><p>3 張 High 級 Jira（含 OSB RVS 欄位 2nd fix、8/11 webmt 補產）已修復並回歸完成。</p></div></div>
+      <div class="tl-item" style="--c:var(--lite)"><div class="tl-num dk">03</div><div class="tl-mid"><i></i></div>
+        <div class="tl-card"><h3>取消邏輯符合規範</h3><p>Wave 前/後取消（CF-1）、超材/缺貨（CF-2）與蝦皮 SLA 自動取消機制確認一致。</p></div></div>
+      <div class="tl-item" style="--c:var(--sage)"><div class="tl-num dk">06</div><div class="tl-mid"><i></i></div>
+        <div class="tl-card"><h3>Go/No-Go 準備</h3><p>上線 Checklist 與 Rollback Plan 草案完成，排定週五會議審查。</p></div></div>
+    </div>
+  </section>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Group / Category</label>
-                    <select id="taskGroup" class="form-control"></select>
-                </div>
-                <div class="form-group">
-                    <label>Duration (Weeks)</label>
-                    <div style="display:flex; gap:5px; align-items:center; font-size:12px;">
-                        <select id="startWeek" class="form-control"></select>
-                        <span>to</span>
-                        <select id="endWeek" class="form-control"></select>
-                    </div>
-                </div>
-            </div>
+  <!-- ④ Metrics -->
+  <section>
+    <div class="s-head"><h2>④ 品質與測試指標</h2><span>Quality Metrics — 四大模組收斂狀況</span></div>
+    <table class="cmp">
+      <tr>
+        <th><div class="banner b-navy">指標</div></th>
+        <th><div class="banner b-blue">正向出貨 HF</div></th>
+        <th><div class="banner b-lite">取消/路由 CF・ORD</div></th>
+        <th><div class="banner b-orange">退貨退款 RVS</div></th>
+        <th><div class="banner b-beige">拒收/NoShow RTW</div></th>
+      </tr>
+      <tr><td>情境總數</td><td>15</td><td>9</td><td>9</td><td>6</td></tr>
+      <tr><td>Pass</td><td>15</td><td>9</td><td>6</td><td>4</td></tr>
+      <tr><td>Fail / Block</td><td>0 / 0</td><td>0 / 0</td><td>2 / 1</td><td>1 / 1</td></tr>
+      <tr><td>狀態</td><td><span class="st g">🟢 已 Sign-off</span></td><td><span class="st g">🟢 已 Sign-off</span></td><td><span class="st y">🟡 收斂中</span></td><td><span class="st y">🟡 收斂中</span></td></tr>
+      <tr>
+        <td><span class="pbtn navy">Key Strengths</span></td>
+        <td><span class="pbtn blue">主流程帳務完整</span></td>
+        <td><span class="pbtn lite">Main Limits</span></td>
+        <td><span class="pbtn orange">優惠券折扣帳務</span></td>
+      </tr>
+    </table>
+  </section>
 
-            <div class="form-group">
-                <label>Custom Color (Hex)</label>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <input type="color" id="taskColorPicker" style="width:40px; height:35px; border:none; cursor:pointer; background:none;">
-                    <input type="text" id="taskColorHex" class="form-control" placeholder="#RRGGBB (Leave empty for default group color)">
-                </div>
-            </div>
+  <!-- ⑤ Risks -->
+  <section>
+    <div class="s-head"><h2>⑤ 高風險與需要協助</h2><span>Risks & Asks — 對策先行、明確請求</span></div>
+    <div class="risks">
+      <div class="risk">
+        <h3>⚠️ 風險 1：Retek 退貨 Tlog 未帶入賣場優惠券折扣</h3>
+        <b>影響</b>：Finance 無法完成 UAT Sign-off（RVS 情境 Fail 2 件）。<br>
+        <b>對策</b>：Jira 緊急單處理中，OSB 本週四前修正 Tlog 映射邏輯並回歸。
+        <div class="ask">🙏 需主管協助：協調 Retek 顧問團隊加入週四帳務確認會議。</div>
+      </div>
+      <div class="risk">
+        <h3>⚠️ 風險 2：RTW 狀態回傳延遲（包裹找尋中／逾期未取）</h3>
+        <b>影響</b>：OMM 無法即時觸發 RTW，庫存與帳務時程受影響（Block 1 件）。<br>
+        <b>對策</b>：以 eDC 模擬資料先行驗證 948/95x 帳務，實體單等待蝦皮狀態回傳。
+        <div class="ask">🙏 需主管協助：去信 Shopee 窗口確認狀態回傳 SLA 與 NoShow 判定时點。</div>
+      </div>
+    </div>
+  </section>
 
-            <div class="form-group checkbox-group">
-                <input type="checkbox" id="isMilestone">
-                <label for="isMilestone" style="margin:0; cursor:pointer;"> Mark as Milestone (Square)</label>
-            </div>
+  <!-- ⑥ Next -->
+  <section>
+    <div class="s-head"><h2>⑥ 下週重點計畫</h2><span>Next Steps — 邁向 Go/No-Go</span></div>
+    <div class="next">
+      <div class="n-item" style="--c:var(--navy)"><div class="num">1</div><p>收斂 RVS／RTW 剩餘 5 件情境，含 RVS-6 爭議件回歸</p></div>
+      <div class="n-item" style="--c:var(--blue)"><div class="num">2</div><p>追蹤帳務修正之 Regression Test，確保 946 virtual 庫存正確</p></div>
+      <div class="n-item" style="--c:var(--lite)"><div class="num dk">3</div><p>取得 Finance 對 Return tlog 之最終 Sign-off</p></div>
+      <div class="n-item" style="--c:var(--rose)"><div class="num">4</div><p>週五召開 Go/No-Go 會議，確認 9/15 如期上線</p></div>
+    </div>
+  </section>
 
-            <div class="form-group">
-                <label>Dependencies (Predecessors)</label>
-                <select id="taskDeps" class="form-control" multiple style="height: 60px;"></select>
-                <small style="color:#888;">Hold Ctrl/Cmd to select multiple</small>
-            </div>
-
-            <div class="form-group">
-                <label>Weekly Details / Notes</label>
-                <div id="weekDetailsContainer" class="week-details-box">
-                    <p style="color:#999; text-align:center;">Select duration to add details</p>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-danger" id="btnDelete" onclick="deleteTask()" style="display:none;">Delete</button>
-                <div style="display:flex; gap:10px; margin-left:auto;">
-                    <button class="btn-outline" onclick="closeModal()">Cancel</button>
-                    <button class="btn-primary" onclick="saveTask()">Save Task</button>
-                </div>
-            </div>
+  <!-- ⑦ Gantt -->
+  <section>
+    <div class="s-head"><h2>⑦ 專案甘特圖</h2><span>【mo+】Project Gantt Chart — Tasks, dependencies, and milestones</span></div>
+    <div class="gantt">
+      <div class="g-toolbar">
+        <span class="g-title">【mo+】Project Gantt Chart</span>
+        <span class="g-btn">＋ New Group</span><span class="g-btn">＋ New Task</span>
+        <span class="g-btn">👁️ View</span><span class="g-btn">💾 Save</span>
+      </div>
+      <div class="g-sub">W32〜W38（8/3〜9/18）｜■ 方塊＝Milestone｜⇐＝Dependency（Predecessor）</div>
+      <div class="g-wrap">
+        <div class="today"><b>今日 8/25</b></div>
+        <div class="g-head">
+          <div></div>
+          <div class="wk">W32<small>8/3</small></div><div class="wk">W33<small>8/10</small></div>
+          <div class="wk">W34<small>8/17</small></div><div class="wk now">W35<small>8/24 本週</small></div>
+          <div class="wk">W36<small>8/31</small></div><div class="wk">W37<small>9/7</small></div>
+          <div class="wk">W38<small>9/14</small></div>
         </div>
+
+        <div class="g-row grp"><div class="tname" style="grid-column:1/9">A. 正向流程 UAT（HF／CF／ORD）</div></div>
+        <div class="g-row"><div class="tname">A1 正向 HF 情境測試（15 情境）</div><div class="bar" style="grid-column:2/5; --c:var(--navy)"><span>100%</span></div></div>
+        <div class="g-row"><div class="tname">A2 Quota 路由 ORD-1 驗證</div><div class="bar" style="grid-column:3/4; --c:var(--navy)"><span>100%</span></div></div>
+        <div class="g-row"><div class="tname">A3 正向帳務 IST/Tlog 驗證 <small>⇐ A1</small></div><div class="bar" style="grid-column:3/6; --c:var(--blue)"><span>90%</span></div></div>
+        <div class="g-row"><div class="tname">★ 正向 Sign-off</div><div class="mile" style="grid-column:5/6; --c:var(--navy)"></div></div>
+
+        <div class="g-row grp"><div class="tname" style="grid-column:1/9">B. 逆向流程 UAT（RVS／RTW）</div></div>
+        <div class="g-row"><div class="tname">B1 RVS 退貨情境測試（9 情境）</div><div class="bar" style="grid-column:3/6; --c:var(--blue)"><span>70%</span></div></div>
+        <div class="g-row"><div class="tname">B2 RTW／NoShow 測試（6 情境） <small>⇐ B1</small></div><div class="bar" style="grid-column:4/7; --c:var(--lite)"><span>65%</span></div></div>
+        <div class="g-row"><div class="tname">B3 RVS-6 爭議件回歸 <small>⇐ B1</small></div><div class="bar" style="grid-column:6/7; --c:var(--blue)"></div></div>
+        <div class="g-row"><div class="tname">★ 逆向 Sign-off</div><div class="mile" style="grid-column:7/8; --c:var(--blue)"></div></div>
+
+        <div class="g-row grp"><div class="tname" style="grid-column:1/9">C. 帳務與 Bug 收斂</div></div>
+        <div class="g-row"><div class="tname">C1 OSB RVS 欄位／webmt 修復回歸</div><div class="bar" style="grid-column:4/6; --c:var(--rose)"><span>80%</span></div></div>
+        <div class="g-row"><div class="tname">C2 Retek 優惠券折扣帳務修正 <small>⇐ C1</small></div><div class="bar" style="grid-column:5/7; --c:var(--rose)"></div></div>
+        <div class="g-row"><div class="tname">★ Finance Sign-off</div><div class="mile" style="grid-column:7/8; --c:var(--rose)"></div></div>
+
+        <div class="g-row grp"><div class="tname" style="grid-column:1/9">D. 上線準備</div></div>
+        <div class="g-row"><div class="tname">D1 Go/No-Go 資料與 Rollback Plan <small>⇐ B4, C3</small></div><div class="bar" style="grid-column:6/8; --c:var(--tan)"></div></div>
+        <div class="g-row"><div class="tname">★ Go/No-Go 會議（9/11）</div><div class="mile" style="grid-column:7/8; --c:var(--navy)"></div></div>
+        <div class="g-row"><div class="tname">D2 正式切轉與上線觀察 <small>⇐ D2 會議</small></div><div class="bar" style="grid-column:8/9; --c:var(--lite)"></div></div>
+        <div class="g-row"><div class="tname">★ Go-Live（9/15）</div><div class="mile" style="grid-column:8/9; --c:var(--rose)"></div></div>
+      </div>
+      <div class="g-legend">
+        <span class="lg"><i style="background:var(--navy)"></i>正向 UAT</span>
+        <span class="lg"><i style="background:var(--blue)"></i>逆向 UAT</span>
+        <span class="lg"><i style="background:var(--rose)"></i>帳務/Bug</span>
+        <span class="lg"><i style="background:var(--tan)"></i>上線準備</span>
+        <span class="lg"><span class="sq" style="background:var(--navy)"></span>Milestone</span>
+        <span class="lg" style="color:var(--rose)">┆ 今日線</span>
+      </div>
     </div>
+  </section>
 
-    <script>
-        const weeksData = [
-            { id: "W35", year: 2026 }, { id: "W36", year: 2026 }, { id: "W37", year: 2026 },
-            { id: "W38", year: 2026 }, { id: "W39", year: 2026 }, { id: "W40", year: 2026 },
-            { id: "W41", year: 2026 }, { id: "W42", year: 2026 }, { id: "W43", year: 2026 },
-            { id: "W44", year: 2026 }, { id: "W45", year: 2026 }, { id: "W46", year: 2026 },
-            { id: "W47", year: 2026 }, { id: "W48", year: 2026 }, { id: "W49", year: 2026 },
-            { id: "W50", year: 2026 }, { id: "W51", year: 2026 }, { id: "W52", year: 2026 },
-            { id: "W1", year: 2027 }, { id: "W2", year: 2027 }, { id: "W3", year: 2027 },
-            { id: "W4", year: 2027 }, { id: "W5", year: 2027 }, { id: "W6", year: 2027 },
-            { id: "W7", year: 2027 }, { id: "W8", year: 2027 }, { id: "W9", year: 2027 },
-            { id: "W10", year: 2027 }, { id: "W11", year: 2027 }, { id: "W12", year: 2027 }
-        ];
-
-        const defaultData = {
-            groups: [
-                { id: "g1", name: "Meeting", color: "#FFD166" },
-                { id: "g2", name: "On Progress", color: "#EF476F" },
-                { id: "g3", name: "On Going", color: "#7209B7" }
-            ],
-            tasks: [
-                { id: "t1", groupId: "g1", name: "Local Kick-off", start: "W35", end: "W35", isMilestone: true, deps: [], color: "", details: { "W35": "8/26 Kick-off" } },
-                { id: "t2", groupId: "g1", name: "Stakeholder Identification", start: "W36", end: "W37", isMilestone: false, deps: ["t1"], color: "", details: {} },
-                { id: "t3", groupId: "g1", name: "Developing a Project Plan", start: "W36", end: "W39", isMilestone: false, deps: ["t1"], color: "", details: {} },
-                
-                { id: "t4", groupId: "g2", name: "Assemble the Project Team", start: "W39", end: "W41", isMilestone: false, deps: ["t3"], color: "", details: {} },
-                { id: "t5", groupId: "g2", name: "Resource Allocation", start: "W40", end: "W42", isMilestone: false, deps: ["t4"], color: "", details: {} },
-                { id: "t6", groupId: "g2", name: "Assign Roles and Tasks", start: "W41", end: "W43", isMilestone: false, deps: ["t5"], color: "", details: {} },
-                
-                { id: "t7", groupId: "g3", name: "Initial Launch", start: "W44", end: "W44", isMilestone: true, deps: ["t6"], color: "", details: { "W44": "Grand Opening!" } },
-                { id: "t8", groupId: "g3", name: "Hold Weekly Progress", start: "W43", end: "W46", isMilestone: false, deps: [], color: "", details: {} },
-                { id: "t9", groupId: "g3", name: "Aligning Tasks", start: "W43", end: "W46", isMilestone: false, deps: [], color: "", details: {} }
-            ]
-        };
-
-        let projectData = JSON.parse(localStorage.getItem('moplus_gantt_v5')) || JSON.parse(JSON.stringify(defaultData));
-        let currentTaskId = null;
-        let isViewMode = false;
-
-        function getTaskColor(task, group) {
-            return (task.color && /^#[0-9A-F]{6}$/i.test(task.color)) ? task.color : group.color;
-        }
-
-        function render() {
-            const grid = document.getElementById('ganttGrid');
-            grid.innerHTML = '';
-
-            grid.innerHTML += `<div class="cell header task-header">Task List</div>`;
-            weeksData.forEach((w, index) => {
-                let label = w.id;
-                if (index === 0 || w.year !== weeksData[index-1].year) {
-                    label = w.year + " " + w.id;
-                }
-                grid.innerHTML += `<div class="cell header">${label}</div>`;
-            });
-
-            projectData.groups.forEach(group => {
-                const groupActions = isViewMode ? '' : `
-                    <button class="btn-sm btn-outline" onclick="editGroup('${group.id}')">Edit</button>
-                    <button class="btn-sm btn-danger" onclick="deleteGroup('${group.id}')">Delete</button>
-                `;
-                grid.innerHTML += `<div class="cell group-row">${group.name} ${groupActions}</div>`;
-                grid.innerHTML += `<div class="cell group-row-filler"></div>`;
-
-                const groupTasks = projectData.tasks.filter(t => t.groupId === group.id);
-                groupTasks.forEach(task => {
-                    let depHtml = '';
-                    if (task.deps && task.deps.length > 0) {
-                        const depNames = task.deps.map(d => {
-                            const depTask = projectData.tasks.find(t => t.id === d);
-                            return depTask ? depTask.name : d;
-                        }).join(', ');
-                        const hasConflict = checkConflict(task);
-                        depHtml = `<span class="dep-tag ${hasConflict ? 'warning' : ''}">⬅ ${depNames}</span>`;
-                    }
-                    
-                    const clickAction = isViewMode ? '' : `onclick="openModal('${task.id}')"`;
-                    grid.innerHTML += `
-                        <div class="cell task-name" ${clickAction}>
-                            <span class="task-name-text">${task.name}</span>
-                            ${depHtml}
-                        </div>
-                    `;
-
-                    const startIdx = weeksData.findIndex(w => w.id === task.start);
-                    const endIdx = weeksData.findIndex(w => w.id === task.end);
-                    const totalWeeks = weeksData.length;
-                    
-                    if (startIdx === -1 || endIdx === -1) return;
-
-                    const weekWidthPct = 100 / totalWeeks;
-                    const bgColor = getTaskColor(task, group);
-                    const conflictClass = checkConflict(task) ? 'bg-conflict' : '';
-
-                    let barHtml = '';
-                    if (task.isMilestone) {
-                        const label = task.details[task.start] || task.name;
-                        // 計算中心點並加上 10px 偏移
-                        const centerPct = (startIdx * weekWidthPct) + (weekWidthPct / 2);
-                        barHtml = `
-                            <div class="milestone" style="left: calc(10px + ${centerPct}% - 8px);" ${clickAction}>
-                                <div class="milestone-label">${label}</div>
-                                <div class="milestone-shape" style="background-color: ${bgColor};"></div>
-                            </div>
-                        `;
-                    } else {
-                        const detailsText = Object.values(task.details || {}).join(' | ');
-                        const leftPct = startIdx * weekWidthPct;
-                        const widthPct = (endIdx - startIdx + 1) * weekWidthPct;
-                        // 左邊加 10px 偏移，寬度減 10px 防止超出右邊界
-                        barHtml = `
-                            <div class="bar ${conflictClass}" 
-                                 style="left: calc(10px + ${leftPct}%); width: calc(${widthPct}% - 10px); background-color: ${bgColor};" 
-                                 ${clickAction}>
-                                ${detailsText}
-                            </div>
-                        `;
-                    }
-                    grid.innerHTML += `<div class="cell timeline-area">${barHtml}</div>`;
-                });
-            });
-        }
-
-        function checkConflict(task) {
-            if (!task.deps || task.deps.length === 0) return false;
-            const taskStartIdx = weeksData.findIndex(w => w.id === task.start);
-            for (let depId of task.deps) {
-                const depTask = projectData.tasks.find(t => t.id === depId);
-                if (depTask && weeksData.findIndex(w => w.id === depTask.end) >= taskStartIdx) return true;
-            }
-            return false;
-        }
-
-        function openModal(taskId = null) {
-            if (isViewMode) return;
-            currentTaskId = taskId;
-            const modal = document.getElementById('modalOverlay');
-            const title = document.getElementById('modalTitle');
-            const btnDelete = document.getElementById('btnDelete');
-            
-            const startSelect = document.getElementById('startWeek');
-            const endSelect = document.getElementById('endWeek');
-            const groupSelect = document.getElementById('taskGroup');
-            const depSelect = document.getElementById('taskDeps');
-            
-            startSelect.innerHTML = ''; endSelect.innerHTML = ''; groupSelect.innerHTML = ''; depSelect.innerHTML = '';
-            
-            weeksData.forEach(w => {
-                const label = `${w.year} ${w.id}`;
-                startSelect.innerHTML += `<option value="${w.id}">${label}</option>`;
-                endSelect.innerHTML += `<option value="${w.id}">${label}</option>`;
-            });
-
-            projectData.groups.forEach(g => {
-                groupSelect.innerHTML += `<option value="${g.id}">${g.name}</option>`;
-            });
-
-            projectData.tasks.forEach(t => {
-                if (t.id !== taskId) depSelect.innerHTML += `<option value="${t.id}">${t.name}</option>`;
-            });
-
-            if (taskId) {
-                const task = projectData.tasks.find(t => t.id === taskId);
-                title.innerText = `Edit: ${task.name}`;
-                btnDelete.style.display = 'block';
-                
-                document.getElementById('taskName').value = task.name;
-                document.getElementById('taskGroup').value = task.groupId;
-                document.getElementById('startWeek').value = task.start;
-                document.getElementById('endWeek').value = task.end;
-                document.getElementById('isMilestone').checked = task.isMilestone;
-                
-                const colorVal = task.color || '';
-                document.getElementById('taskColorHex').value = colorVal;
-                document.getElementById('taskColorPicker').value = colorVal || '#000000';
-
-                Array.from(depSelect.options).forEach(opt => { opt.selected = task.deps.includes(opt.value); });
-                renderWeekDetails(task);
-            } else {
-                title.innerText = 'New Task';
-                btnDelete.style.display = 'none';
-                document.getElementById('taskName').value = '';
-                document.getElementById('isMilestone').checked = false;
-                document.getElementById('taskColorHex').value = '';
-                document.getElementById('taskColorPicker').value = '#000000';
-                document.getElementById('weekDetailsContainer').innerHTML = '<p style="color:#999; text-align:center;">Save first to add details</p>';
-            }
-            modal.classList.add('active');
-        }
-
-        function renderWeekDetails(task) {
-            const container = document.getElementById('weekDetailsContainer');
-            container.innerHTML = '';
-            const startIdx = weeksData.findIndex(w => w.id === task.start);
-            const endIdx = weeksData.findIndex(w => w.id === task.end);
-            const relevantWeeks = weeksData.slice(startIdx, endIdx + 1);
-
-            relevantWeeks.forEach(w => {
-                const val = task.details && task.details[w.id] ? task.details[w.id] : '';
-                container.innerHTML += `
-                    <div class="week-detail-item">
-                        <span style="font-weight:bold; width:70px;">${w.year} ${w.id}:</span>
-                        <input type="text" class="detail-input" data-week="${w.id}" value="${val}" placeholder="Key task/date...">
-                    </div>
-                `;
-            });
-        }
-
-        function saveTask() {
-            const name = document.getElementById('taskName').value;
-            if (!name) return alert('Task Name is required');
-
-            const groupId = document.getElementById('taskGroup').value;
-            const start = document.getElementById('startWeek').value;
-            const end = document.getElementById('endWeek').value;
-            const isMilestone = document.getElementById('isMilestone').checked;
-            const color = document.getElementById('taskColorHex').value.trim();
-            
-            const depSelect = document.getElementById('taskDeps');
-            const deps = Array.from(depSelect.selectedOptions).map(o => o.value);
-
-            const details = {};
-            document.querySelectorAll('.detail-input').forEach(input => {
-                if (input.value.trim()) details[input.dataset.week] = input.value;
-            });
-
-            if (weeksData.findIndex(w => w.id === start) > weeksData.findIndex(w => w.id === end)) return alert('Start week must be before End week');
-
-            if (currentTaskId) {
-                const task = projectData.tasks.find(t => t.id === currentTaskId);
-                Object.assign(task, { name, groupId, start, end, isMilestone, color, deps, details });
-            } else {
-                projectData.tasks.push({ id: 't' + Date.now(), groupId, name, start, end, isMilestone, color, deps, details });
-            }
-
-            closeModal();
-            render();
-            saveData(false);
-        }
-
-        function deleteTask() {
-            if (confirm('Delete this task?')) {
-                projectData.tasks = projectData.tasks.filter(t => t.id !== currentTaskId);
-                projectData.tasks.forEach(t => { t.deps = t.deps.filter(d => d !== currentTaskId); });
-                closeModal();
-                render();
-                saveData(false);
-            }
-        }
-
-        function addGroup() {
-            if (isViewMode) return;
-            const name = prompt("Enter new Group name:");
-            if (!name) return;
-            const id = "g" + Date.now();
-            projectData.groups.push({ id: id, name: name, color: "#6c757d" });
-            render();
-            saveData(false);
-        }
-
-        function editGroup(groupId) {
-            if (isViewMode) return;
-            const group = projectData.groups.find(g => g.id === groupId);
-            const newName = prompt("Edit Group name:", group.name);
-            if (newName) {
-                group.name = newName;
-                render();
-                saveData(false);
-            }
-        }
-
-        function deleteGroup(groupId) {
-            if (isViewMode) return;
-            const hasTasks = projectData.tasks.some(t => t.groupId === groupId);
-            if (hasTasks) {
-                if (!confirm('This group contains tasks. Delete group and all its tasks?')) return;
-                projectData.tasks = projectData.tasks.filter(t => t.groupId !== groupId);
-            } else {
-                if (!confirm('Delete this group?')) return;
-            }
-            projectData.groups = projectData.groups.filter(g => g.id !== groupId);
-            render();
-            saveData(false);
-        }
-
-        function toggleViewMode() {
-            isViewMode = !isViewMode;
-            const btn = document.getElementById('viewToggleBtn');
-            if (isViewMode) {
-                btn.innerText = '✏️ Edit';
-                btn.classList.remove('btn-outline');
-                btn.classList.add('btn-primary');
-                document.getElementById('addGroupBtn').style.display = 'none';
-                document.getElementById('addTaskBtn').style.display = 'none';
-                document.getElementById('saveBtn').style.display = 'none';
-            } else {
-                btn.innerText = '👁️ View';
-                btn.classList.remove('btn-primary');
-                btn.classList.add('btn-outline');
-                document.getElementById('addGroupBtn').style.display = 'block';
-                document.getElementById('addTaskBtn').style.display = 'block';
-                document.getElementById('saveBtn').style.display = 'block';
-            }
-            render();
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        }
-
-        function saveData(showAlert = false) {
-            localStorage.setItem('moplus_gantt_v5', JSON.stringify(projectData));
-            if (showAlert) {
-                const toast = document.createElement('div');
-                toast.innerText = '✅ Saved successfully!';
-                toast.style.cssText = 'position:fixed; bottom:20px; right:20px; background:#2ed573; color:white; padding:10px 20px; border-radius:20px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:999;';
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 2000);
-            }
-        }
-
-        document.getElementById('taskColorPicker').addEventListener('input', (e) => {
-            document.getElementById('taskColorHex').value = e.target.value;
-        });
-        document.getElementById('taskColorHex').addEventListener('input', (e) => {
-            if(/^#[0-9A-F]{6}$/i.test(e.target.value)) {
-                document.getElementById('taskColorPicker').value = e.target.value;
-            }
-        });
-
-        render();
-    </script>
+  <footer>Shopee x OMM 平台訂單整合專案｜本報告為機密文件，僅供內部專案匯報使用</footer>
+</div>
 </body>
 </html>
