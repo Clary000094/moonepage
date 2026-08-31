@@ -3,159 +3,602 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shopee x OMM 專案週報｜One-Page</title>
+<title>mo+ Shop Project</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  /* ── 底層：霧藍系的米白當背景 ── */
-  --bg:#F2F2ED;          /* 米白（整體底） */
-  --card:#FFFFFF;        /* 純白卡片 */
-  --line:#E4E4DC;        /* 米白加深（線條/邊框） */
+  /* ========== 色彩變數 ========== */
+  :root {
+    --bg: #F2F2ED;
+    --card: #FFFFFF;
+    --line: #E4E4DC;
+    --beige: #FFEBB8;
+    --cream: #FFEBB8;
+    --ink: #464B71;
+    --title: #601D49;
+    --navy: #464B71;
+    --blue: #118AB2;
+    --lite: #7CD5C7;
+    --sage: #7CD5C7;
+    --orange: #BD5579;
+    --rose: #BD5579;
+    --tan: #EA9D9D;
+  }
 
-  /* ── 文字 ── */
-  --ink:#464B71;         /* 霧藍（內文） */
-  --title:#601D49;       /* 深紫莓（大標題） */
+  /* ========== 基礎 ========== */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-  /* ── 主深色：霧藍系 ── */
-  --navy:#464B71;        /* 霧藍（圓圈/旗標/深塊） */
-  --blue:#118AB2;        /* 湖水藍（次主色/數據） */
-  --lite:#24B1B1;        /* 薄荷綠（淺色塊/膠囊） */
-  --sage:#24B1B1;        /* 薄荷綠 */
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans TC', 'Poppins', sans-serif;
+    padding-bottom: 70px;
+  }
 
-  /* ── 強調：莓紫系 ── */
-  --orange:#BD5579;      /* 莓果玫瑰（風險/強調/今日線） */
-  --rose:#BD5579;        /* 莓果玫瑰 */
-  --tan:#EA9D9D;         /* 玫瑰粉（次強調） */
+  h1, h2, h3, .num {
+    font-family: 'Poppins', 'Noto Sans TC', sans-serif;
+  }
 
-  /* ── 淺色點綴：兩系混合 ── */
-  --beige:#FFEBB8;       /* 奶油黃（邊框淺塊/提示底） */
-  --cream:#FFEBB8;       /* 奶油黃 */
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+/* ========== Hero（上下排列、水平置中） ========== */
+.hero {
+  max-width: 1180px;
+  margin: 48px auto 0;
+  padding: 24px 24px 8px;
+  display: flex;
+  flex-direction: column;      /* 改為垂直排列（上下結構） */
+  align-items: center;         /* 水平置中對齊 */
+  justify-content: center;
+  gap: 24px;                   /* 標題與膠囊之間的間距 */
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: center;          /* 確保文字本身也置中 */
 }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{background:var(--bg); color:var(--ink); font-family:'Noto Sans TC','Poppins',sans-serif; padding-bottom:70px;}
-  h1,h2,h3,.num{font-family:'Poppins','Noto Sans TC',sans-serif;}
-  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
 
-  /* ===== Hero ===== */
-  .hero{padding:64px 20px 30px; text-align:center;}
-  .hero h1{color:var(--title); font-size:38px; font-weight:800; letter-spacing:.5px;}
-  .hero p{margin-top:10px; font-size:17px; color:#6b5d50;}
-  .meta{margin-top:26px; display:flex; flex-wrap:wrap; gap:14px; justify-content:center;}
-  .pill{padding:10px 26px; border-radius:999px; font-weight:700; font-size:15px; color:#fff; box-shadow:0 4px 10px rgba(60,40,30,.12);}
-  .pill.navy{background:var(--navy);}
-  .pill.blue{background:var(--blue);}
-  .pill.orange{background:var(--rose);}
-  .pill.lite{background:var(--lite); color:var(--navy);}
+.hero h1 {
+  font-size: clamp(36px, 5.5vw, 68px);
+  font-weight: 800;
+  color: var(--orange);
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin: 0;
+}
 
-  section{margin-top:70px;}
-  .s-head{text-align:center; margin-bottom:40px;}
-  .s-head h2{color:var(--title); font-size:30px; font-weight:800;}
-  .s-head span{display:block; margin-top:8px; color:#7a6e64; font-size:15px;}
+.hero h1 .t-accent {
+  color: var(--title);         /* 「mo+ Shop」紫紅色 */
+}
 
-  /* ===== ① Dashboard ===== */
-  .tiles{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
-  .tile{background:var(--card); border-radius:14px; padding:26px 20px; text-align:center;
-        box-shadow:0 12px 24px rgba(60,40,30,.08); border-top:6px solid var(--c,var(--navy));}
-  .tile .big{font-size:34px; font-weight:800; color:var(--c,var(--navy)); font-family:'Poppins';}
-  .tile .lb{margin-top:8px; font-weight:700; color:#3a2f28;}
-  .tile .sb{margin-top:4px; font-size:13px; color:#7a6e64;}
+.hero .subtitle {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;          /* 膠囊寬度＝文字寬度 */
+  white-space: nowrap;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue) 0%, var(--lite) 100%);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #FFFFFF;
+  text-shadow: 0 1px 4px rgba(70, 75, 113, 0.45);
+}
 
-  /* ===== ② Summary ===== */
-  .sum-card{background:var(--card); border-radius:16px; padding:34px 40px; line-height:1.9; font-size:16.5px;
-            box-shadow:0 12px 26px rgba(60,40,30,.09); border-left:10px solid var(--rose);}
-  .sum-card b{color:var(--navy);}
+  /* ========== 區塊標題 ========== */
+  section {
+    margin-top: 70px;
+  }
 
-  /* ===== ③ Timeline ===== */
-  .tl-grid{display:grid; grid-template-columns:1fr 1fr; gap:36px 70px;}
-  .tl-item{--c:var(--navy); display:grid; grid-template-columns:92px 46px 1fr; align-items:center;}
-  .tl-num{width:88px; height:88px; border-radius:50%; background:var(--c); color:#fff;
-          display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800;}
-  .tl-item.dk .tl-num{color:var(--navy);}
-  .tl-mid{display:flex; justify-content:center; align-self:stretch; padding:6px 0;}
-  .tl-mid i{width:14px; border-radius:8px; background:var(--c); opacity:.95;}
-  .tl-card{position:relative; background:var(--card); border-radius:14px; padding:22px 26px;
-           box-shadow:0 12px 22px rgba(60,40,30,.09);}
-  .tl-card::before{content:""; position:absolute; left:-32px; top:50%; width:32px; height:2px; background:#cdbfa9;}
-  .tl-card::after{content:""; position:absolute; left:-11px; top:calc(50% - 6px); width:11px; height:11px; border-radius:50%; background:var(--c);}
-  .tl-card h3{font-size:17px; font-weight:800; color:#2d3a4a; margin-bottom:8px;}
-  .tl-card p{font-size:14px; line-height:1.75; color:#6b5d50;}
+  .wrap > section:first-child {
+    margin-top: 40px;
+  }
 
-  /* ===== ④ Table ===== */
-  table.cmp{width:100%; border-collapse:collapse; background:var(--card); box-shadow:0 12px 26px rgba(60,40,30,.09);}
-  .cmp th,.cmp td{border:1px solid var(--line); padding:16px 14px; text-align:center; font-size:14.5px;}
-  .cmp td:first-child{font-weight:800; color:#2d3a4a; width:150px;}
-  .banner{clip-path:polygon(0 0,100% 0,100% 76%,50% 100%,0 76%); padding:24px 8px 34px; font-weight:800; font-size:16px; color:#fff;}
-  .b-navy{background:var(--navy);}
-  .b-blue{background:var(--blue);}
-  .b-lite{background:var(--lite); color:var(--navy);}
-  .b-orange{background:var(--rose);}
-  .b-beige{background:var(--tan); color:var(--navy);}
-  .st{padding:4px 16px; border-radius:999px; font-weight:700; font-size:13px;}
-  .st.g{background:#dcebd9; color:#4a6b4a;}
-  .st.y{background:#fbe4d8; color:#9a5a3a;}
-  .pbtn{display:inline-block; padding:10px 26px; border-radius:999px; font-weight:800; font-size:14px; color:#fff;}
-  .pbtn.navy{background:var(--navy);}
-  .pbtn.blue{background:var(--blue);}
-  .pbtn.lite{background:var(--lite); color:var(--navy);}
-  .pbtn.orange{background:var(--rose);}
+  .s-head {
+    text-align: center;
+    margin-bottom: 40px;
+  }
 
-  /* ===== ⑤ Risks ===== */
-  .risks{display:grid; grid-template-columns:1fr 1fr; gap:26px;}
-  .risk{background:var(--card); border-radius:14px; padding:26px 30px; border-left:10px solid var(--rose);
-        box-shadow:0 12px 22px rgba(60,40,30,.09); line-height:1.8; font-size:14.5px;}
-  .risk h3{font-size:17px; font-weight:800; color:#2d3a4a; margin-bottom:10px;}
-  .risk b{color:var(--navy);}
-  .risk .ask{background:var(--cream); border-radius:10px; padding:10px 14px; margin-top:8px; color:#8a5a2c;}
+  .s-head h2 {
+    color: var(--title);
+    font-size: 30px;
+    font-weight: 800;
+  }
 
-  /* ===== ⑥ Next ===== */
-  .next{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
-  .n-item{background:var(--card); border-radius:14px; padding:26px 20px; text-align:center; box-shadow:0 12px 22px rgba(60,40,30,.09);}
-  .n-item .num{width:64px; height:64px; margin:0 auto; border-radius:50%; background:var(--c,var(--navy)); color:#fff;
-               display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800;}
-  .n-item.dk .num{color:var(--navy);}
-  .n-item p{margin-top:16px; font-size:14px; line-height:1.7; color:#3a2f28; font-weight:500;}
+  .s-head span {
+    display: block;
+    margin-top: 8px;
+    color: #7a6e64;
+    font-size: 15px;
+  }
 
-  /* ===== ⑦ Gantt ===== */
-  .gantt{background:var(--card); border-radius:16px; padding:28px 30px; box-shadow:0 12px 26px rgba(60,40,30,.09);}
-  .g-toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:6px;}
-  .g-title{font-weight:800; font-size:19px; color:var(--navy); margin-right:auto;}
-  .g-btn{padding:7px 16px; border-radius:8px; background:var(--cream); border:1px solid var(--line); font-size:13px; font-weight:700; color:#3a2f28;}
-  .g-sub{color:#7a6e64; font-size:13px; margin-bottom:18px;}
-  .g-wrap{position:relative; overflow-x:auto;}
-  .g-head,.g-row{display:grid; grid-template-columns:230px repeat(7,1fr); align-items:center; min-width:920px;}
-  .g-head .wk{text-align:center; font-weight:700; color:#7a6e64; font-size:12.5px; padding:8px 0; border-left:1px solid var(--line);}
-  .g-head .wk small{display:block; font-weight:500; color:#a59680;}
-  .g-head .wk.now{color:var(--rose); font-weight:800;}
-  .g-row{border-top:1px solid var(--line); min-height:44px;}
-  .g-row .tname{font-size:13px; font-weight:600; color:#3a2f28; padding:6px 12px 6px 4px; line-height:1.5;}
-  .g-row .tname small{color:#a59680; font-weight:500;}
-  .g-row.grp{background:var(--cream);}
-  .g-row.grp .tname{font-weight:800; color:var(--navy); font-size:13.5px;}
-  .bar{height:18px; border-radius:9px; background:var(--c); position:relative; margin:0 5px;}
-  .bar span{position:absolute; right:8px; top:50%; transform:translateY(-50%); color:#fff; font-size:10px; font-weight:700;}
-  .mile{width:15px; height:15px; border-radius:3px; background:var(--c); margin:0 auto; box-shadow:0 0 0 3px rgba(45,58,74,.08);}
-  .today{position:absolute; top:40px; bottom:8px; left:calc(230px + (100% - 230px) * 4 / 7); border-left:2px dashed var(--rose); z-index:2; pointer-events:none;}
-  .today b{position:absolute; top:-30px; left:-38px; color:var(--rose); font-size:11px; white-space:nowrap;}
-  .g-legend{display:flex; flex-wrap:wrap; gap:18px; margin-top:16px; font-size:12.5px; color:#7a6e64; align-items:center;}
-  .lg{display:inline-flex; align-items:center; gap:6px;}
-  .lg i{width:22px; height:10px; border-radius:5px; display:inline-block;}
-  .lg .sq{width:11px; height:11px; border-radius:3px;}
+  /* ========== ① 儀表板 ========== */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
 
-  footer{margin-top:80px; text-align:center; color:#a59680; font-size:13px;}
-  @media(max-width:900px){ .tiles,.next{grid-template-columns:1fr 1fr;} .tl-grid,.risks{grid-template-columns:1fr;} }
+.tile {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px 20px; /* ✅ 原為 26px 20px，上下各減 10px */
+  text-align: center;
+  box-shadow: 0 12px 24px rgba(60, 40, 30, 0.08);
+  border-top: 6px solid var(--c, var(--navy));
+}
+
+.tile .big {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--c, var(--navy));
+  font-family: 'Poppins', sans-serif;
+  margin-top: 6px;    /* ✅ 原為 12px */
+  margin-bottom: 4px; /* ✅ 原為 8px */
+}
+
+.tile .lb {
+  margin-top: 2px;    /* ✅ 原為 4px */
+  font-size: 16px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #3a2f28;
+}
+
+.tile .sb {
+  margin-top: 2px;    /* ✅ 原為 4px */
+  font-size: 13px;
+  color: #7a6e64;
+}
+
+  /* ========== ② 執行摘要 ========== */
+  .sum-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 34px 40px;
+    line-height: 1.9;
+    font-size: 16.5px;
+    box-shadow: 0 12px 26px rgba(60, 40, 30, 0.09);
+    border-left: 10px solid var(--rose);
+  }
+
+  .sum-card b {
+    color: var(--navy);
+  }
+
+  /* ========== ③ 關鍵成果時間軸 ========== */
+  .tl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px 70px;
+  }
+
+  .tl-item {
+    --c: var(--navy);
+    display: grid;
+    grid-template-columns: 92px 46px 1fr;
+    align-items: center;
+  }
+
+  .tl-num {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: var(--c);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .tl-item.dk .tl-num {
+    color: var(--navy);
+  }
+
+  .tl-mid {
+    display: flex;
+    justify-content: center;
+    align-self: stretch;
+    padding: 6px 0;
+  }
+
+  .tl-mid i {
+    width: 14px;
+    border-radius: 8px;
+    background: var(--c);
+    opacity: 0.95;
+  }
+
+  .tl-card {
+    position: relative;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 12px 22px rgba(60, 40, 30, 0.09);
+  }
+
+  .tl-card::before {
+    content: "";
+    position: absolute;
+    left: -32px;
+    top: 50%;
+    width: 32px;
+    height: 2px;
+    background: #cdbfa9;
+  }
+
+  .tl-card::after {
+    content: "";
+    position: absolute;
+    left: -11px;
+    top: calc(50% - 6px);
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--c);
+  }
+
+  .tl-card h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #2d3a4a;
+    margin-bottom: 8px;
+  }
+
+  .tl-card p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: #6b5d50;
+  }
+
+  /* ========== ④ 指標表格 ========== */
+  table.cmp {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    box-shadow: 0 12px 26px rgba(60, 40, 30, 0.09);
+  }
+
+  .cmp th,
+  .cmp td {
+    border: 1px solid var(--line);
+    padding: 16px 14px;
+    text-align: center;
+    font-size: 14.5px;
+  }
+
+  .cmp td:first-child {
+    font-weight: 800;
+    color: #2d3a4a;
+    width: 150px;
+  }
+
+  .banner {
+    clip-path: polygon(0 0, 100% 0, 100% 76%, 50% 100%, 0 76%);
+    padding: 24px 8px 34px;
+    font-weight: 800;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .b-navy { background: var(--navy); }
+  .b-blue { background: var(--blue); }
+  .b-lite { background: var(--lite); color: var(--navy); }
+  .b-orange { background: var(--rose); }
+  .b-beige { background: var(--tan); color: var(--navy); }
+
+  .st {
+    padding: 4px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .st.g { background: #dcebd9; color: #4a6b4a; }
+  .st.y { background: #fbe4d8; color: #9a5a3a; }
+
+  .pbtn {
+    display: inline-block;
+    padding: 10px 26px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .pbtn.navy { background: var(--navy); }
+  .pbtn.blue { background: var(--blue); }
+  .pbtn.lite { background: var(--lite); color: var(--navy); }
+  .pbtn.orange { background: var(--rose); }
+
+  /* ========== ⑤ 風險 ========== */
+  .risks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+  }
+
+  .risk {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 26px 30px;
+    border-left: 10px solid var(--rose);
+    box-shadow: 0 12px 22px rgba(60, 40, 30, 0.09);
+    line-height: 1.8;
+    font-size: 14.5px;
+  }
+
+  .risk h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #2d3a4a;
+    margin-bottom: 10px;
+  }
+
+  .risk b {
+    color: var(--navy);
+  }
+
+  .risk .ask {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    color: #8a5a2c;
+  }
+
+  /* ========== ⑥ 下週計畫 ========== */
+  .next {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+
+  .n-item {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 26px 20px;
+    text-align: center;
+    box-shadow: 0 12px 22px rgba(60, 40, 30, 0.09);
+  }
+
+  .n-item .num {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--c, var(--navy));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .n-item.dk .num {
+    color: var(--navy);
+  }
+
+  .n-item p {
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #3a2f28;
+    font-weight: 500;
+  }
+
+  /* ========== ⑦ 甘特圖 ========== */
+  .gantt {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 28px 30px;
+    box-shadow: 0 12px 26px rgba(60, 40, 30, 0.09);
+  }
+
+  .g-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .g-title {
+    font-weight: 800;
+    font-size: 19px;
+    color: var(--navy);
+    margin-right: auto;
+  }
+
+  .g-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    font-size: 13px;
+    font-weight: 700;
+    color: #3a2f28;
+  }
+
+  .g-sub {
+    color: #7a6e64;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .g-wrap {
+    position: relative;
+    overflow-x: auto;
+  }
+
+  .g-head,
+  .g-row {
+    display: grid;
+    grid-template-columns: 230px repeat(7, 1fr);
+    align-items: center;
+    min-width: 920px;
+  }
+
+  .g-head .wk {
+    text-align: center;
+    font-weight: 700;
+    color: #7a6e64;
+    font-size: 12.5px;
+    padding: 8px 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .g-head .wk small {
+    display: block;
+    font-weight: 500;
+    color: #a59680;
+  }
+
+  .g-head .wk.now {
+    color: var(--rose);
+    font-weight: 800;
+  }
+
+  .g-row {
+    border-top: 1px solid var(--line);
+    min-height: 44px;
+  }
+
+  .g-row .tname {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3a2f28;
+    padding: 6px 12px 6px 4px;
+    line-height: 1.5;
+  }
+
+  .g-row .tname small {
+    color: #a59680;
+    font-weight: 500;
+  }
+
+  .g-row.grp {
+    background: var(--cream);
+  }
+
+  .g-row.grp .tname {
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 13.5px;
+  }
+
+  .bar {
+    height: 18px;
+    border-radius: 9px;
+    background: var(--c);
+    position: relative;
+    margin: 0 5px;
+  }
+
+  .bar span {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .mile {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    background: var(--c);
+    margin: 0 auto;
+    box-shadow: 0 0 0 3px rgba(45, 58, 74, 0.08);
+  }
+
+  .today {
+    position: absolute;
+    top: 40px;
+    bottom: 8px;
+    left: calc(230px + (100% - 230px) * 4 / 7);
+    border-left: 2px dashed var(--rose);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .today b {
+    position: absolute;
+    top: -30px;
+    left: -38px;
+    color: var(--rose);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .g-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 16px;
+    font-size: 12.5px;
+    color: #7a6e64;
+    align-items: center;
+  }
+
+  .lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .lg i {
+    width: 22px;
+    height: 10px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+
+  .lg .sq {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+  }
+
+  /* ========== 頁尾 ========== */
+  footer {
+    margin-top: 80px;
+    text-align: center;
+    color: #a59680;
+    font-size: 13px;
+  }
+
+  /* ========== RWD ========== */
+  @media (max-width: 900px) {
+    .tiles,
+    .next {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .tl-grid,
+    .risks {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 <body>
 
 <header class="hero">
-  <h1>Shopee x OMM 平台訂單整合專案</h1>
-  <p>PM 每週一頁式進度報告｜2026-08-25（W35）</p>
-  <div class="meta">
-    <span class="pill navy">PM：＿＿＿</span>
-    <span class="pill orange">整體狀態：🟡 黃燈（風險可控）</span>
-    <span class="pill blue">UAT 執行率 85%</span>
-    <span class="pill lite">Go-Live：2026-09-15</span>
-  </div>
+  <h1><span class="t-accent">mo+ Shop</span> Project</h1>
+  <div class="subtitle">Report Period｜2026/08/25 - 2026/12/31</div>
 </header>
 
 <div class="wrap">
@@ -164,11 +607,34 @@
   <section>
     <div class="s-head"><h2>① 專案總覽儀表板</h2><span>Project Dashboard — 一秒掌握健康度</span></div>
     <div class="tiles">
-      <div class="tile" style="--c:var(--rose)"><div class="big">🟡</div><div class="lb">整體狀態</div><div class="sb">帳務風險收斂中，不影響上線日</div></div>
-      <div class="tile" style="--c:var(--navy)"><div class="big">85%</div><div class="lb">UAT 執行率</div><div class="sb">34 / 39 情境已執行</div></div>
-      <div class="tile" style="--c:var(--blue)"><div class="big">87%</div><div class="lb">情境 Pass 率</div><div class="sb">High Bug 3 → 0</div></div>
-      <div class="tile" style="--c:var(--lite)"><div class="big">9/15</div><div class="lb">預定 Go-Live</div><div class="sb">9/11 Go/No-Go 會議</div></div>
-    </div>
+  <!-- 1. 專案階段 (深紫) -->
+  <div class="tile" style="--c:var(--navy)">
+    <div class="lb">專案階段與狀態</div>
+    <div class="big">Req. Analysis</div>
+    <div class="sb">On Track</div>
+  </div>
+  
+  <!-- 2. UAT 執行率 (藍) -->
+  <div class="tile" style="--c:var(--blue)">
+    <div class="lb">UAT 執行率</div>
+    <div class="big">85%</div>
+    <div class="sb">34 / 39 情境已執行</div>
+  </div>
+  
+  <!-- 3. 情境 Pass 率 (綠) -->
+  <div class="tile" style="--c:var(--lite)">
+    <div class="lb">情境 Pass 率</div>
+    <div class="big">87%</div>
+    <div class="sb">High Bug 3 → 0</div>
+  </div>
+  
+  <!-- 4. 預定 Go-Live (粉) -->
+  <div class="tile" style="--c:var(--rose)">
+    <div class="lb">預定 Go-Live</div>
+    <div class="big">9/15</div>
+    <div class="sb">9/11 Go/No-Go 會議</div>
+  </div>
+</div>
   </section>
 
   <!-- ② Summary -->
